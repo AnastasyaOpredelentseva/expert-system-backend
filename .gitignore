@@ -2,6 +2,10 @@
 /dist
 /node_modules
 
+# Developer specific configuration files
+.env
+.tool-versions
+
 # Logs
 logs
 *.log
