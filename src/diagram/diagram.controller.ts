@@ -1,10 +1,12 @@
 import {
-  Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
+  Put,
   Query,
   Res,
 } from '@nestjs/common';
@@ -16,7 +18,7 @@ import { DiagramService } from './diagram.service';
 export class DiagramController {
   constructor(private getCVService: DiagramService) {}
 
-  @Get()
+  @Get('findAll')
   @HttpCode(200)
   async findAll(@Res() response: Response): Promise<Diagram[]> {
     const data = await this.getCVService.findAll();
@@ -25,7 +27,19 @@ export class DiagramController {
     return data;
   }
 
-  @Post()
+  @Get('find')
+  @HttpCode(200)
+  async findOne(
+    @Query('id') id: string,
+    @Res() response: Response,
+  ): Promise<Diagram[]> {
+    const data = await this.getCVService.findOne(id);
+
+    response.status(HttpStatus.OK).send(data);
+    return data;
+  }
+
+  @Post('create')
   @HttpCode(200)
   async create(
     @Query('name') name: string,
@@ -38,5 +52,25 @@ export class DiagramController {
 
     response.status(HttpStatus.OK).send(data);
     return data;
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  async update(
+    @Param('id') id: string,
+    @Query('name') name: string,
+    @Query('structure') structure: string,
+    @Res() response: Response,
+  ): Promise<Diagram> {
+    const data = await this.getCVService.update(id, { name, structure });
+
+    response.status(HttpStatus.OK).send(data);
+    return data;
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string, @Res() response: Response) {
+    const data = await this.getCVService.delete(id);
+    response.status(HttpStatus.OK).send(data);
   }
 }

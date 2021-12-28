@@ -14,8 +14,25 @@ export class DiagramService {
     return this.diagramRepository.find();
   }
 
+  async findOne(id: string): Promise<Diagram[]> {
+    return this.diagramRepository.find({ id: id });
+  }
+
+  async delete(id: string): Promise<null> {
+    await this.diagramRepository.delete({ id: id });
+    return null;
+  }
+
   async create(dto: ItemDTO): Promise<Diagram> {
     const data = await this.diagramRepository.create(dto);
+    return data;
+  }
+
+  async update(id: string, dto: ItemDTO): Promise<Diagram> {
+    const data = await this.diagramRepository.findOne({ id: id });
+    data.name = dto.name;
+    data.structure = dto.structure;
+    data.save();
     return data;
   }
 }
