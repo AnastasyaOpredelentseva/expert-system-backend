@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  Body,
   HttpCode,
   HttpStatus,
   Param,
@@ -27,14 +28,13 @@ export class DiagramController {
     return data;
   }
 
-  @Get('find')
+  @Get(':id')
   @HttpCode(200)
   async findOne(
-    @Query('id') id: string,
+    @Param('id') id: string,
     @Res() response: Response,
-  ): Promise<Diagram[]> {
+  ): Promise<Diagram> {
     const data = await this.getCVService.findOne(id);
-
     response.status(HttpStatus.OK).send(data);
     return data;
   }
@@ -42,30 +42,27 @@ export class DiagramController {
   @Post('create')
   @HttpCode(200)
   async create(
-    @Query('name') name: string,
-    @Query('structure') structure: string,
+    @Body() data: { name: string; structure: string },
     @Res() response: Response,
   ): Promise<Diagram> {
-    const data = await (
-      await this.getCVService.create({ name, structure })
-    ).save();
+    const result = await (await this.getCVService.create(data)).save();
 
     response.status(HttpStatus.OK).send(data);
-    return data;
+    return result;
   }
 
   @Put(':id')
   @HttpCode(200)
   async update(
     @Param('id') id: string,
-    @Query('name') name: string,
-    @Query('structure') structure: string,
+    @Body() data: { name: string; structure: string },
+
     @Res() response: Response,
   ): Promise<Diagram> {
-    const data = await this.getCVService.update(id, { name, structure });
+    const result = await this.getCVService.update(id, data);
 
-    response.status(HttpStatus.OK).send(data);
-    return data;
+    response.status(HttpStatus.OK).send(result);
+    return result;
   }
 
   @Delete(':id')

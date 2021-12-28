@@ -14,8 +14,8 @@ export class DiagramService {
     return this.diagramRepository.find();
   }
 
-  async findOne(id: string): Promise<Diagram[]> {
-    return this.diagramRepository.find({ id: id });
+  async findOne(id: string): Promise<Diagram> {
+    return this.diagramRepository.findOne({ id: id });
   }
 
   async delete(id: string): Promise<null> {
